@@ -125,22 +125,18 @@ function main(){
 //Passa de string para JSON
         data_json = JSON.parse(data);
 
+//Validações referentes as informações com a finalidade de avaliação
         console.log(data_json)
         console.log(data_json['rates'][id_nome_moeda])
         console.log(data_json['date'])
-        valor_moeda_data_json.push(data_json['rates'][id_nome_moeda])
-        datas_data_json.push(data_json['date'])
-
         console.log(valor_moeda_data_json)
         console.log(datas_data_json)
 
-
+//Inserção dos valores no Array
+        valor_moeda_data_json.push(data_json['rates'][id_nome_moeda])
+        datas_data_json.push(data_json['date'])
         data_inicio_data.setDate(data_inicio_data.getDate() +1);
-
-
     }
-
-
 
 }
 
@@ -155,7 +151,7 @@ datas_data_json_semrepetir = [... new Set(datas_data_json)];
                 type:'line'
             },
             title:{
-                text:'Cotação de Moedas'
+                text:'Cotação de Moedas em Dólar (USD)'
             },
             xAxis:{
                 <!-- As categorias são os dias -->
