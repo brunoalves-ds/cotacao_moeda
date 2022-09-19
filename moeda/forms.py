@@ -15,7 +15,7 @@ class PegarInfoForm(forms.ModelForm):
         datafim = self.cleaned_data.get('data_fim')
         today = dt.today()
 #Criei a condição em dias úteis e não contando feriados (country=None)
-        if wd.networkdays(datainicio, datafim, country=None) <= 5 and wd.networkdays(datainicio, datafim, country=None) > 1:
+        if wd.networkdays(datainicio, datafim, country=None) <= 5 and wd.networkdays(datainicio, datafim, country=None) >= 1:
             if datainicio <= today or datafim <= today:
                 return self.cleaned_data
 #Houve a necessidade de validar se os dias eram iguais pois isso poderia gerar erro
