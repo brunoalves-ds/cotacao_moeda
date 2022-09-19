@@ -1,0 +1,1 @@
+web: gunicorn cotacao_moeda.wsgi

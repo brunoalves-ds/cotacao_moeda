@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+    content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css"
+    rel="stylesheet" integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT"
+    crossorigin="anonymous">
+    <script src = " https://code.highcharts.com/highcharts.js "></script >
+    <link rel="shortcut icon" href="https://cdn.remessaonline.com.br/assets/transferencia-internacional.svg">
+    <title>Moeda</title>
+    <style>
+#ancoras:hover {
+    transition: 0.5s;
+
+    opacity: 0.7;
+    text-decoration: none;
+    text-color:white;
+}
+
+#divprincipal{
+    margin-top:50px;
+    width:700px;
+}
+    </style>
+</head>
+<body>
+<div class="container text-center" id="divprincipal">
+<table class="table">
+    <tr class="table-primary">
+        <td>Moeda</td>
+        <td>Data Inicio</td>
+        <td>Data Fim</td>
+        <td colspan="2">Ações</td>
+    </tr>
+    <tr>
+        <td id="nome_moeda" nome-moeda-id="{{ object.nome_moeda }}">
+            {{ object.nome_moeda }}
+        </td>
+        <td id="data_inicio" data-inicio-id="{{ object.data_inicio }}">
+            {{ object.data_inicio }}
+        </td>
+        <td id="data_fim" data-fim-id="{{ object.data_fim }}">
+            {{ object.data_fim }}
+        </td>
+        <td>
+            <a href="{% url 'moedaupdate' pegarinfo.pk %}">
+                Editar
+            </a>
+        </td>
+        <td>
+            <a href="{% url 'moedadelete' pegarinfo.pk %}">
+                Excluir
+            </a>
+        </td>
+    </tr>
+</table>
+
+    <div id="container" style="width:100%; height:400px;"> </div>
+
+    <a href="{% url 'index' %}" id="ancoras">
+        <button type="button" class="btn btn-outline-primary">
+        Voltar
+        </button>
+    </a>
+</div>
+<script>
+//Seleciona e armazena o atributo do ID Data-Inicio
+const el = document.querySelector("#data_inicio");
+const id_data_inicio = el.getAttribute("data-inicio-id");
+//Primeira saída
+console.log(id_data_inicio);
+
+//Seleciona e armazena o atributo do ID Data-Fim
+const el2 = document.querySelector("#data_fim");
+const id_data_fim = el2.getAttribute("data-fim-id");
+//Segunda Saida
+console.log(id_data_fim);
+
+//Troca do tipo string para o tipo Data
+const data_inicio_data = new Date(id_data_inicio) ;
+const data_fim_data = new Date(id_data_fim)
+
+
+
+//Verificação da data somente para avaliação
+console.log("Essa é a data inicio " + data_inicio_data.getMonth())
+console.log("Essa é a data fim " + data_fim_data.getMonth())
+
+//Armazena o nome da moeda
+const el3 = document.querySelector("#nome_moeda");
+const id_nome_moeda = el3.getAttribute("nome-moeda-id");
+
+//Cria os dois arrays para inserção dos valores de moeda e data do JSON
+var valor_moeda_data_json = []
+var datas_data_json = []
+
+//Faz a "conexão" com a API solicitada
+function fazGet(url){
+    let request = new XMLHttpRequest()
+    request.open("GET", url, false)
+    request.send()
+    return request.responseText
+}
+
+
+function main(){
+    //Executa o mecanismo de inserir as datas entre a "data_inicio" e a "data_fim"
+    while (data_inicio_data < data_fim_data){
+        data_inicio_data.setDate(data_inicio_data.getDate() +1);
+        console.log(data_inicio_data);
+//Armazena as datas "como um slicing de quebra para as suas respectivas variáveis
+        ano = data_inicio_data.getFullYear()
+        mes = data_inicio_data.getMonth() + 1
+        dia = data_inicio_data.getDate()
+
+        console.log(mes)
+        console.log(dia)
+//Gera um link para cada ano, mes e dia entre as datas informadas na BASE USD
+        link = "https://api.vatcomply.com/rates?base=USD&date="+ ano + "-" + mes +"-" + dia
+        console.log(link)
+//Pega o link e executa a URL
+        data = fazGet(link);
+//Passa de string para JSON
+        data_json = JSON.parse(data);
+
+        console.log(data_json)
+        console.log(data_json['rates'][id_nome_moeda])
+        console.log(data_json['date'])
+        valor_moeda_data_json.push(data_json['rates'][id_nome_moeda])
+        datas_data_json.push(data_json['date'])
+
+        console.log(valor_moeda_data_json)
+        console.log(datas_data_json)
+
+
+
+
+
+    }
+
+
+
+}
+
+main()
+
+valor_moeda_data_json_semrepetir = [... new Set(valor_moeda_data_json)];
+datas_data_json_semrepetir = [... new Set(datas_data_json)];
+
+    document.addEventListener('DOMContentLoaded', function(){
+        const chart = Highcharts.chart('container', {
+            chart: {
+                type:'line'
+            },
+            title:{
+                text:'Cotação de Moedas'
+            },
+            xAxis:{
+                <!-- As categorias são os dias -->
+                categories:datas_data_json_semrepetir
+            },
+            yAxis:{
+                title: {
+                    text:'Valor'
+                }
+
+            },
+            series:[{
+                //O nome da moeda
+                name: id_nome_moeda,
+                //Os valores inseridos em cada ponto
+                data:valor_moeda_data_json_semrepetir
+            }]
+        });
+    });
+
+
+
+</script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-u1OknCvxWvY5kfmNBILK2hRnQC3Pr17a+RTT6rIHI7NnikvbZlHgTPOOmMi466C8"
+    crossorigin="anonymous"></script>
+</body>
+</html>

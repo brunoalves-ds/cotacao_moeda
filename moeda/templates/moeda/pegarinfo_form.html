@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+
+<form action="" method="post">
+    <!-- Proteção das informações do FORM -->
+    {% csrf_token %}
+  <div class="mb-3">
+       {{ form.nome_moeda|as_crispy_field  }}
+
+  </div>
+        <span>Formato: Ano-Mes-Dia</span>
+<div class="row">
+  <div class="col">
+      {{ form.data_inicio|as_crispy_field  }}
+  </div>
+  <div class="col">
+       {{ form.data_fim|as_crispy_field  }}
+
+  </div>
+
+</div>
+    <button type="submit" class="btn btn-outline-primary" id="ancoras">
+        Gerar
+    </button>
+    <a href="{% url 'index' %}" id="ancoras">
+        <button type="button" class="btn btn-outline-primary">
+        Voltar
+        </button>
+    </a>
+</form>
+
+{% endblock %}

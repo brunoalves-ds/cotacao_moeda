@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block content %}
+
+    <h3>Períodos e moedas </h3>
+    <table class="table">
+        <tr class="table-primary">
+            <th>Moeda</th>
+            <th>Data Inicial</th>
+            <th>Data Final</th>
+        </tr>
+            {% for pegarinfo in object_list %}
+        <tr>
+            <!-- Informo a primary key do model para gerar o gráfico -->
+            <td><a href="{% url 'moedadetail' pegarinfo.pk %}">{{ pegarinfo.nome_moeda }}</a></td>
+            <td>{{ pegarinfo.data_inicio }}</td>
+            <td>{{ pegarinfo.data_fim }}</td>
+        </tr>
+            {% endfor %}
+    </table>
+<a href="{% url 'moeda' %}" id="ancoras" >
+    <button type="submit" class="btn btn-outline-primary btn-lg">
+        Gerar
+    </button>
+</a>
+{% endblock %}
