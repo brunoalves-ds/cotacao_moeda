@@ -25,4 +25,4 @@ class PegarInfoForm(forms.ModelForm):
         elif datainicio >= today:
             self.add_error('data_inicio',"A data inicio não pode ser maior ou igual a hoje")
         else:
-            self.add_error('data_inicio', 'Selecione somente 5 dias úteis')
+            self.add_error('data_inicio', 'Selecione no máximo 5 dias úteis')
